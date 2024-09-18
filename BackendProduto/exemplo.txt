@@ -1,0 +1,11 @@
+Objetivo: Criar um API RestFull para controle de produtos
+
+Modelo:
+    Produtp: id, nome, quantidade, valor, observacao
+
+Repositório de produto (Em primeiro momento não irá se conectar com BD)
+    - obter todos
+    - obter por ID
+    - cadastrar
+    - atualizar por id
+    - deletar por id
