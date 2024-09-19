@@ -9,3 +9,10 @@ Repositório de produto (Em primeiro momento não irá se conectar com BD)
     - cadastrar
     - atualizar por id
     - deletar por id
+
+Serviço de Produto: (Pode ou não ter regras de negócio)
+    - obter todos
+    - obter por ID
+    - cadastrar
+    - atualizar por id
+    - deletar por id
