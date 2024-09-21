@@ -16,3 +16,10 @@ Serviço de Produto: (Pode ou não ter regras de negócio)
     - cadastrar
     - atualizar por id
     - deletar por id
+
+Controller de Produto: (Receber as reqisições Http e redirecionar para o serviço específico)
+    - obter todos
+    - obter por ID
+    - cadastrar
+    - atualizar por id
+    - deletar por id
