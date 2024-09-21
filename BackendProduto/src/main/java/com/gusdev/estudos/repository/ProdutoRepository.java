@@ -1,6 +1,7 @@
 package com.gusdev.estudos.repository;
 
 import com.gusdev.estudos.model.Produto;
+import com.gusdev.estudos.model.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -71,7 +72,7 @@ public class ProdutoRepository {
         Optional<Produto> produtoEncontrado = obterPorId(produto.getId());
 
         if(produtoEncontrado.isEmpty()){
-            throw new InputMismatchException("Produto não encontrado.");
+            throw new ResourceNotFoundException("Produto não encontrado.");
         }
 
         deletar(produto.getId());
