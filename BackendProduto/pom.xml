@@ -50,6 +50,17 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency> <!-- Dependência para JPA e Hibernate -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency> <!-- Dependência para MySQL -->
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
     </dependencies>
 
 </project>

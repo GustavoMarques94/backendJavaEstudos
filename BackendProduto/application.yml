@@ -1,0 +1,12 @@
+#Este arquivo é utilizado no Spring Boot para configurar propriedades da aplicação de forma mais legível e organizada
+#Ex: vamos configurar o acesso ao banco de dados MySQL e algumas opções relacionadas ao JPA
+spring:
+  datasource: #Os valores da variáveis foram definidos em ambiente no Windows
+    url: ${DB_URL} #URL JDBC que aponta para o BD MySQL que deseja utilizar
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: ${DB_DRIVER} #Driver JDBC específico para o MySQL. O Spring Boot usa o mysql-connector-java que foi adicionado no pom.xml
+  jpa:
+    hibernate: #Define o comportamento do Hibernate para a criação e atualização de tabelas no BD
+      ddl-auto: update #Hibernate irá atualizar o esquema do BD para se alinhar com as suas entidades
+    show-sql: true #Ativa a exibição de consultas SQL que o Spring faz no BD
