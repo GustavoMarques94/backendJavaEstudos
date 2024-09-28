@@ -1,7 +1,9 @@
 #Este arquivo é utilizado no Spring Boot para configurar propriedades da aplicação de forma mais legível e organizada
 #Ex: vamos configurar o acesso ao banco de dados MySQL e algumas opções relacionadas ao JPA
+server:
+  port: 8083
 spring:
-  datasource: #Os valores da variáveis foram definidos em ambiente no Windows
+  datasource: #Os valores das variáveis foram definidos no arquivo .env
     url: ${DB_URL} #URL JDBC que aponta para o BD MySQL que deseja utilizar
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}

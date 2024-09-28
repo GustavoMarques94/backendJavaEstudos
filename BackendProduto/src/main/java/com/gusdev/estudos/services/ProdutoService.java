@@ -1,12 +1,16 @@
 package com.gusdev.estudos.services;
 
 import com.gusdev.estudos.model.Produto;
+import com.gusdev.estudos.model.exception.ResourceNotFoundException;
 import com.gusdev.estudos.repository.ProdutoRepository;
+import com.gusdev.estudos.shared.ProdutoDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /* 1° Coisa a se fazer ao criar uma service, estou dizendo pro spring que isso é um serviço,
     injeto essa dependência dentro do spring, o spring terá controle sobre ele, com isso poderemos utilizar:
@@ -23,9 +27,13 @@ public class ProdutoService {
      * Método para retornar uma lista de produtos.
      * @return Lista de produtos.
      */
-    public Optional<List<Produto>> obterTodos(){
-        //colocar regra caso tenha...
-        return produtoRepository.obterTodos();
+    public List<ProdutoDTO> obterTodos(){
+
+        List<Produto> produtos = produtoRepository.findAll();
+
+        return produtos.stream()
+                .map(produto -> new ModelMapper().map(produto, ProdutoDTO.class))
+                .collect(Collectors.toList()); //ao final da operação map, pega tudo que estiver lá e me retorne uma lista
     }
 
     /**
@@ -33,23 +41,41 @@ public class ProdutoService {
      * @param id do produto que será localizado.
      * @return Retorna um produto caso seja encontrado.
      */
-    public Optional<Produto> obterPorId(Integer id){
-        if(Objects.isNull(id)){
-            return Optional.empty();
+    public Optional<ProdutoDTO> obterPorId(Integer id){
+
+        Optional<Produto> produto = produtoRepository.findById(id);
+
+        if(produto.isEmpty()){
+            throw new ResourceNotFoundException("Produto com id: " + id + " não encontrado");
         }
-        return produtoRepository.obterPorId(id);
+
+        ProdutoDTO produtoDTO = new ModelMapper().map(produto.get(), ProdutoDTO.class); //Para extrair valores do Optional se utiliza o get()
+
+        return Optional.of(produtoDTO); //Crio um optional de produtoDTO
     }
 
     /**
      * Método para adicionar um produto na lista.
-     * @param produto que será adicionado.
+     * @param produtoDTO que será adicionado.
      * @return Retorna o produto que foi adicionado na lista.
      */
-    public Produto adicionar(Produto produto){
-        if(Objects.isNull(produto)){
-            throw new IllegalArgumentException("Produto não pode ser nulo.");
-        }
-        return produtoRepository.adicionar(produto);
+    public ProdutoDTO adicionar(ProdutoDTO produtoDTO){
+        //Removendo o id para conseguir fazer o cadastro
+        produtoDTO.setId(null);
+
+        //Criar um objeto de mapeamento
+        ModelMapper mapper = new ModelMapper();
+
+        //Converter o nosso produtoDTO em um Produto, sem id
+        Produto produto = mapper.map(produtoDTO, Produto.class);
+
+        //Salvar o Produto do banco, com id
+        produto = produtoRepository.saveAndFlush(produto);
+
+        produtoDTO.setId(produto.getId());
+
+        //Retornar o ProdutoDTO atualizado
+        return produtoDTO;
     }
 
     /**
@@ -57,24 +83,33 @@ public class ProdutoService {
      * @param id do produto a ser deletado
      */
     public void deletar(Integer id){
-        if(Objects.isNull(id)){
-            throw new IllegalArgumentException("ID não pode ser nulo.");
+
+        Optional<Produto> produto = produtoRepository.findById(id);
+
+        if(produto.isEmpty()){
+            throw new ResourceNotFoundException("Não foi posível deletar o produto com o id: " + id + " - Produto não existe");
         }
-        produtoRepository.deletar(id);
+
+        produtoRepository.deleteById(id);
     }
 
     /**
      * Método para atualizar o produto na lista.
-     * @param produto que será atualizado.
+     * @param produtoDTO que será atualizado.
      * @param id do produto que será atualizado.
      * @return Retorna o produto após atualizar a lista.
      */
-    public Produto atualizar(Integer id, Produto produto){
-        if(Objects.isNull(id)){
-            throw new IllegalArgumentException("ID não pode ser nulo.");
-        }
-        // Na requisição de um método update, o id não vem no corpo do objeto, vem separado
-        produto.setId(id);
-        return produtoRepository.atualizar(produto);
+    public ProdutoDTO atualizar(Integer id, ProdutoDTO produtoDTO){
+
+        produtoDTO.setId(id);
+
+        ModelMapper mapper = new ModelMapper();
+
+        Produto produto = mapper.map(produtoDTO, Produto.class);
+
+        //o Save serve tanto para adicionar, quanto atualizar --> se tiver 'id' ele sabe que tem que atualizar, se não tiver ele cadastra
+        produtoRepository.saveAndFlush(produto);
+
+        return produtoDTO;
     }
 }
